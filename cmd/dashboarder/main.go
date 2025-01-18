@@ -1,10 +1,12 @@
 package main
 
 import (
-	"fmt"
+	"io"
 	"log/slog"
 	"os"
 )
+
+var applog *slog.Logger
 
 func init() {
 	lf, err := os.OpenFile("application.log", os.O_CREATE|os.O_APPEND|os.O_RDWR, 0640)
@@ -18,5 +20,7 @@ func init() {
 }
 
 func main() {
-
+	// first info about start / end
+	applog.Info("Dashboarder starting up...")
+	defer applog.Info("Dashboarder ending...")
 }

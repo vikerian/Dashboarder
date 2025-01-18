@@ -3,13 +3,17 @@ package main
 import (
 	"fmt"
 	"log/slog"
+
+	//"github.com/vikerian/mongo"
+	"github.com/vikerian/mongo"
+	// "github.com/vikerian/redis"
 )
 
 // types definitions
 type DBConn struct {
-	Siri  SiriDB
-	Redis RedisDB
-	Mongo MongoDB
+	//Siri  SiriDB
+	//Redis RedisDB
+	Mongo mongo.MongoDB
 	log   *slog.Logger
 }
 
@@ -17,10 +21,10 @@ func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error
 	// construct DSN for DBConns and connect to DBConns -> save connections to global dbs var
 	//redisDSN := fmt.Sprintf("redis://%s:%s@%s:%d/%d", config.Redis.Username, config.Redis.Password, config.Redis.Host, config.Redis.Port, config.Redis.DBIndex)
 	//siriDSN := fmt.Sprintf("siridb://%s:%s@%s:%d/%s", config.SiriDB.Username, config.SiriDB.Password, config.SiriDB.Host, config.SiriDB.Port, config.SiriDB.DBName)
-	mongoDSN := MongoDBCreateDSN(cfg.Mongo.Username, cfg.Mongo.Password, cfg.Mongo.Host, cfg.Mongo.Port, cfg.Mongo.DBName)
+	mongoDSN := mongo.MongoDBCreateDSN(cfg.Mongo.Username, cfg.Mongo.Password, cfg.Mongo.Host, cfg.Mongo.Port, cfg.Mongo.DBName)
 
 	lg.Info("Connecting to mongodb backend database...")
-	mongo, err := NewMongoConnection(mongoDSN)
+	mg, err := mongo.NewMongoConnection(mongoDSN)
 	if err != nil {
 		errstr := fmt.Sprintf("Error on connection to mongodb: %v", err)
 		lg.Error(errstr)
@@ -30,7 +34,7 @@ func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error
 
 	return &DBConn{
 		log:   lg,
-		Mongo: mongo,
+		Mongo: mg,
 	}, nil
 }
 
