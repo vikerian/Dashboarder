@@ -11,16 +11,16 @@ import (
 
 // types definitions
 type DBConn struct {
-	//Siri  SiriDB
-	//Redis RedisDB
+	Siri  SiriDB
+	Redis RedisDB
 	Mongo mongo.MongoDB
 	log   *slog.Logger
 }
 
 func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error) {
-	// construct DSN for DBConns and connect to DBConns -> save connections to global dbs var
-	//redisDSN := fmt.Sprintf("redis://%s:%s@%s:%d/%d", config.Redis.Username, config.Redis.Password, config.Redis.Host, config.Redis.Port, config.Redis.DBIndex)
-	//siriDSN := fmt.Sprintf("siridb://%s:%s@%s:%d/%s", config.SiriDB.Username, config.SiriDB.Password, config.SiriDB.Host, config.SiriDB.Port, config.SiriDB.DBName)
+	//construct DSN for DBConns and connect to DBConns -> save connections to global dbs var
+	redisDSN := fmt.Sprintf("redis://%s:%s@%s:%d/%d", cfg.Redis.Username, cfg.Redis.Password, cfg.Redis.Host, cfg.Redis.Port, cfg.Redis.DBIndex)
+	siriDSN := fmt.Sprintf("siridb://%s:%s@%s:%d/%s", cfg.SiriDB.Username, cfg.SiriDB.Password, cfg.SiriDB.Host, cfg.SiriDB.Port, cfg.SiriDB.DBName)
 	mongoDSN := mongo.MongoDBCreateDSN(cfg.Mongo.Username, cfg.Mongo.Password, cfg.Mongo.Host, cfg.Mongo.Port, cfg.Mongo.DBName)
 
 	lg.Info("Connecting to mongodb backend database...")
@@ -32,9 +32,30 @@ func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error
 	}
 	lg.Info("Connection to MongoDB established...")
 
+	lg.Info("Connecting to siriDB database...")
+	sdb, err := NewSiriDBConnection(siriDSN)
+	if err != nil {
+		errstr := fmt.Sprintf("Error on connecting to siridb: %v", err)
+		lg.Error(errstr)
+		return nil, err
+	}
+	lg.Info("SiriDB connection established...")
+
+	lg.Info("Connecting to redis database...")
+	rdb, err := NewRedisConnection(redisDSN)
+	if err != nil {
+		errstr := fmt.Sprintf("Error on connecting to redis : %v", err)
+		lg.Error(errstr)
+		return nil, err
+	}
+
+	lg.Info("RedisDB connection established...")
+
 	return &DBConn{
 		log:   lg,
 		Mongo: mg,
+		Redis: rdb,
+		Siri:  sdb,
 	}, nil
 }
 
