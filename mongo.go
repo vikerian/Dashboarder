@@ -159,14 +159,22 @@ func (mc *Con) Update(collection, key string, value interface{}) (bool, error) {
 	return true, nil
 }
 
-func (mc *Con) Delete(collection, key string) error {
+// Delete - delete data from specified collection by specified key
+func (mc *Con) Delete(collection, key string) (bool, error) {
+	var err error
 	debugstr := fmt.Sprintf("Delete from collection %s key %s", collection, key)
 	mc.log.Debug(debugstr)
 	mc.ActualCollection = mc.CLH.Database(mc.Database).Collection(collection)
-
-	return nil
+	deleted, err := mc.Delete(collection, key)
+	if err != nil {
+		errstr := fmt.Sprintf("Error on deleting record: %v", err)
+		mc.log.Error(errstr)
+		return false, err
+	}
+	return deleted, err
 }
 
+// Close - close client connection
 func (mc *Con) Close() error {
 	return mc.CLH.Disconnect(mc.CTX)
 }

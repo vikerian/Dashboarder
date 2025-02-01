@@ -24,7 +24,7 @@ func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error
 	mongoDSN := mongo.MongoDBCreateDSN(cfg.Mongo.Username, cfg.Mongo.Password, cfg.Mongo.Host, cfg.Mongo.Port, cfg.Mongo.DBName)
 
 	lg.Info("Connecting to mongodb backend database...")
-	mg, err := mongo.NewMongoConnection(mongoDSN)
+	mg, err := NewMongoConnection(mongoDSN, lg)
 	if err != nil {
 		errstr := fmt.Sprintf("Error on connection to mongodb: %v", err)
 		lg.Error(errstr)
@@ -61,13 +61,13 @@ func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error
 
 // Create -> create record in collection(table) with key (column) and value
 func (dbc *DBConn) Create(table string, key string, value interface{}) (ok bool, err error) {
-
+	ok, err = dbc.Create(table, key, value)
 	return
 }
 
 // Read -> Read record from collection(table) with key(column/index), returns value,nil or nil/error
 func (dbc *DBConn) Read(table string, key string) (rvalue interface{}, err error) {
-
+	rvalue, err = dbc.Read(table, key)
 	return
 }
 
@@ -79,6 +79,6 @@ func (dbc *DBConn) Update(table string, key string, newval interface{}) (ok bool
 
 // Delete -> delete record from collection with key
 func (dbc *DBConn) Delete(table string, key string) (ok bool, err error) {
-
+	ok, err = dbc.Delete(table, key)
 	return
 }
