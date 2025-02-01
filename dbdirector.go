@@ -73,7 +73,16 @@ func (dbc *DBConn) Read(table string, key string) (rvalue interface{}, err error
 
 // Update -> Trying to update record in collection with key
 func (dbc *DBConn) Update(table string, key string, newval interface{}) (ok bool, err error) {
-
+	oldvalue, err := dbc.Read(table, key)
+	if oldvalue != newval {
+		ok, err = dbc.Update(table, key, newval)
+		if err != nil {
+			ok = false
+			return
+		} else {
+			ok = false
+		}
+	}
 	return
 }
 
