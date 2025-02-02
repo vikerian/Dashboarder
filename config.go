@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"os"
+
+	"github.com/google/uuid"
 )
 
 // ConfigurationFILE - what configuration file we use
@@ -37,6 +39,13 @@ type DBAppConfig struct {
 	} `json:"siridb"`
 }
 
+type OpenWeatherConfig struct {
+	Id                uuid.UUID `json:"uuid"`
+	LocationName      string    `json:"location_name"`
+	LocationLongitude float64   `json:"location_longitude"`
+	LocationLatitude  float64   `json:"location_latitude"`
+}
+
 /*
 type dataSource struct {
 	ID     uint32    `json:"datasource_id"`
@@ -48,7 +57,7 @@ type dataSource struct {
 */
 
 // ReadConfig - read configuration file, returns AppConfig structure with values or error
-func ReadConfig(confFile string) (*DBAppConfig, error) {
+func ReadDBConfig(confFile string) (*DBAppConfig, error) {
 	var ConfFilePath string
 	// first which conf file we use
 	if confFile == "" {
