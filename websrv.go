@@ -6,17 +6,28 @@ import (
 	"github.com/google/uuid"
 )
 
-type webserver struct {
-	listenIP   string
-	listenPort uint32
-	routes     map[string]string // map route:function
-	ctx        context.Context
-	pages      []webPage
+type WebServer struct {
+	ListenIP   string
+	ListenPort uint32
+	Routes     map[string]string // map route:pageName
+	Ctx        context.Context
+	Pages      []*WebPage
 }
 
-type webPage struct {
-	id         uuid.UUID `bson:"id"`
-	name       string    `bson:"name"`
-	content    []byte    `bson:"content"`
-	accessible bool      `bson:"accessible"`
+type WebPage struct {
+	Id         uuid.UUID `bson:"id"`
+	Name       string    `bson:"name"`
+	Content    []byte    `bson:"content"`
+	Accessible bool      `bson:"accessible"`
+}
+
+// NewWebServer - Web server instance construtor
+// takes params for web server run
+// returns web server instance (not runnning, just filled struct)
+func NewWebServer(listenIP string, listenPort uint32, routes map[string]string) *WebServer {
+	return &WebServer{
+		ListenIP:   listenIP,
+		ListenPort: listenPort,
+		Routes:     routes,
+	}
 }
