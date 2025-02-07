@@ -1,6 +1,8 @@
 module github.com/vikerian/Dashboarder
 
-go 1.23.4
+go 1.22.2
+
+toolchain go1.23.6
 
 require (
 	github.com/SiriDB/go-siridb-connector v1.0.14

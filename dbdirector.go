@@ -61,13 +61,13 @@ func NewDBConnections(lg *slog.Logger, cfg *DBAppConfig) (dbs *DBConn, err error
 
 // Create -> create record in collection(table) with key (column) and value
 func (dbc *DBConn) Create(table string, key string, value interface{}) (ok bool, err error) {
-	ok, err = dbc.Create(table, key, value)
+	//ok, err = dbc.Create(table, key, value)
 	return
 }
 
 // Read -> Read record from collection(table) with key(column/index), returns value,nil or nil/error
 func (dbc *DBConn) Read(table string, key string) (rvalue interface{}, err error) {
-	rvalue, err = dbc.Read(table, key)
+	//rvalue, err = dbc.Read(table, key)
 	return
 }
 
@@ -75,7 +75,7 @@ func (dbc *DBConn) Read(table string, key string) (rvalue interface{}, err error
 func (dbc *DBConn) Update(table string, key string, newval interface{}) (ok bool, err error) {
 	oldvalue, err := dbc.Read(table, key)
 	if oldvalue != newval {
-		ok, err = dbc.Update(table, key, newval)
+		//ok, err = dbc.Update(table, key, newval)
 		if err != nil {
 			ok = false
 			return
@@ -88,6 +88,6 @@ func (dbc *DBConn) Update(table string, key string, newval interface{}) (ok bool
 
 // Delete -> delete record from collection with key
 func (dbc *DBConn) Delete(table string, key string) (ok bool, err error) {
-	ok, err = dbc.Delete(table, key)
+	//ok, err = dbc.Delete(table, key)
 	return
 }

@@ -12,30 +12,32 @@ services:
 #      - "MONGO_INITDB_ROOT_PASSWORD=mongopwpass"
     networks:
       - "appnet"
-#  redisdb:
-#    container_name: "redisdb"
-#    image: "redis/redis-stack:latest"
-#    ports:
-#      - "6379:6379"
-#      - "8001:8001"
-#    restart: on-failure
-#    networks:
-#      - "appnet"
-#  siridb:
-#    container_name: siridb
+  redisdb:
+    container_name: "redisdb"
+    image: "redis/redis-stack:latest"
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    restart: on-failure
+    networks:
+      - "appnet"
+  siridb:
+    container_name: siridb
 #    image: "ghcr.io/siridb/siridb-server:latest"
-#    ports:
-#      - "9000:9000"
-#      - "9020:9020"
-#    volumes:
-#      - "./siridb-data:/var/lib/siridb"
-#    restart: on-failure
-#    environment:
-#      - "SIRIDB_BIND_SERVER_ADDRESS=0.0.0.0"
-#      - "SIRIDB_LISTEN_CLIENT_PORT=9000"
-#      - "SIRIDB_BUFFER_SYNC_INTERVAL=500"
-#    networks:
-#      - "appnet"
+    image: "vikerian/siridb-alpine"
+    build: "./siridb-build/"
+    ports:
+      - "9000:9000"
+      - "9020:9020"
+    volumes:
+      - "./siridb-data:/var/lib/siridb"
+    restart: on-failure
+    environment:
+      - "SIRIDB_BIND_SERVER_ADDRESS=0.0.0.0"
+      - "SIRIDB_LISTEN_CLIENT_PORT=9000"
+      - "SIRIDB_BUFFER_SYNC_INTERVAL=500"
+    networks:
+      - "appnet"
 #  mongo-client:
 #    image: "mongo-express"
 #    container_name: "mongo-client"
