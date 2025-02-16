@@ -1,15 +1,0 @@
---2025-01-26 22:29:12--  https://www.google.com/imgres?imgurl=https://static-00.iconduck.com/assets.00/lightning-icon-1722x2048-vee60qnc.png
-Resolving www.google.com (www.google.com)... 142.251.36.132, 2a00:1450:4014:80e::2004
-Connecting to www.google.com (www.google.com)|142.251.36.132|:443... connected.
-HTTP request sent, awaiting response... 301 Moved Permanently
-Location: https://www.google.com/imghp [following]
---2025-01-26 22:29:12--  https://www.google.com/imghp
-Reusing existing connection to www.google.com:443.
-HTTP request sent, awaiting response... 200 OK
-Length: unspecified [text/html]
-Saving to: ‘imgres?imgurl=https:%2F%2Fstatic-00.iconduck.com%2Fassets.00%2Flightning-icon-1722x2048-vee60qnc.png’
-
-                             imgres?imgurl=https:%2F%2Fsta     [<=>                                                                                                                                      ]       0  --.-KB/s               imgres?imgurl=https:%2F%2Fstatic-00.iconduck.com%2Fassets.     [ <=>                                                                                                                                     ]  19.85K  --.-KB/s    in 0.002s  
-
-2025-01-26 22:29:13 (8.88 MB/s) - ‘imgres?imgurl=https:%2F%2Fstatic-00.iconduck.com%2Fassets.00%2Flightning-icon-1722x2048-vee60qnc.png’ saved [20327]
-
