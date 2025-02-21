@@ -3,10 +3,8 @@ package config
 import (
 	"context"
 	"crypto/tls"
-	"net/http"
 	"time"
 
-	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -29,21 +27,18 @@ type Config struct {
 		Password      string
 		AdminUsername string
 		AdminPassword string
-		Client        interface{}
 	}
 
 	MongoDB struct {
 		Url         string
 		Options     *options.ClientOptions
 		Collections []*mongo.Collection
-		Client      *mongo.Client
 	}
 
 	OpenWeather struct {
 		Longitude float64
 		Latitude  float64
 		Token     string
-		Client    *http.Client
 	}
 	CTX    context.Context
 	Cancel context.CancelFunc
@@ -56,7 +51,6 @@ type Config struct {
 		Topics    []string
 		CaCRT     []byte
 		TlsConfig tls.Config
-		Client    *mqtt.Client
 	}
 }
 
@@ -85,10 +79,6 @@ func GetConfig() (*Config, error) {
 	cfg.SiriDB.Database = "devel"
 	cfg.MongoDB.Url = "mongodb://localhost:27017"
 	cfg.MongoDB.Options = options.Client().ApplyURI(cfg.MongoDB.Url)
-	client, err := mongo.Connect(cfg.CTX, cfg.MongoDB.Options)
-	if err != nil {
-		return nil, err
-	}
-	cfg.MongoDB.Client = client
+
 	return cfg, nil
 }
