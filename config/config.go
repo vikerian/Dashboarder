@@ -2,8 +2,11 @@ package config
 
 import (
 	"context"
+	"crypto/tls"
+	"net/http"
 	"time"
 
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
@@ -26,6 +29,7 @@ type Config struct {
 		Password      string
 		AdminUsername string
 		AdminPassword string
+		Client        interface{}
 	}
 
 	MongoDB struct {
@@ -39,9 +43,21 @@ type Config struct {
 		Longitude float64
 		Latitude  float64
 		Token     string
+		Client    *http.Client
 	}
 	CTX    context.Context
 	Cancel context.CancelFunc
+
+	Mqtt struct {
+		Host      string
+		Port      string
+		User      string
+		Password  string
+		Topics    []string
+		CaCRT     []byte
+		TlsConfig tls.Config
+		Client    *mqtt.Client
+	}
 }
 
 /* Global vars */
