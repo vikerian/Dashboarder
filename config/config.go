@@ -3,9 +3,9 @@ package config
 import (
 	"context"
 	"crypto/tls"
+	"os"
 	"time"
 
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
@@ -30,9 +30,10 @@ type Config struct {
 	}
 
 	MongoDB struct {
-		Url         string
-		Options     *options.ClientOptions
-		Collections []*mongo.Collection
+		Url           string
+		Options       *options.ClientOptions
+		DatabaseName  string
+		CollectionSTR string
 	}
 
 	OpenWeather struct {
@@ -77,8 +78,9 @@ func GetConfig() (*Config, error) {
 	cfg.SiriDB.AdminUsername = "sa"
 	cfg.SiriDB.AdminPassword = "siri"
 	cfg.SiriDB.Database = "devel"
-	cfg.MongoDB.Url = "mongodb://localhost:27017"
+	cfg.MongoDB.Url = os.Getenv("MONGODB_URL")
 	cfg.MongoDB.Options = options.Client().ApplyURI(cfg.MongoDB.Url)
-
+	cfg.MongoDB.DatabaseName = "sample_guides"
+	cfg.MongoDB.CollectionSTR = "planets"
 	return cfg, nil
 }

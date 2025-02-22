@@ -27,7 +27,8 @@ RUN apk update \
  && git checkout $SIRIDB_VERSION \
  && cd Release \
  && make clean \
- && make
+ && make \
+ && make install
 
  FROM alpine:3.21 AS stage
 

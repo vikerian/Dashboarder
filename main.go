@@ -2,6 +2,7 @@ package main
 
 import (
 	"dashboarder/config"
+	"dashboarder/mongo"
 	"fmt"
 	"log/slog"
 	"os"
@@ -23,6 +24,9 @@ func main() {
 	defer log.Info("Dashboarder quitting...")
 
 	// config get
+	infomsg := "Loading configuration ..."
+	log.Info(infomsg)
+	var conf *config.Config
 	conf, err := config.GetConfig()
 	if err != nil {
 		errstr := fmt.Sprintf("Error on reading configuration: %v", err)
@@ -34,4 +38,19 @@ func main() {
 	confstr := fmt.Sprintf("Configuration: \n %v+ \n", conf)
 	log.Info(confstr)
 
+	// create mongo connection
+	infomsg = "Setting up connection to mongo database..."
+	log.Info(infomsg)
+	ourmongo, err := mongo.New(conf.MongoDB.Url)
+	if err != nil {
+		errstr := fmt.Sprintf("Error on connecting to mongo database: %v", err)
+		log.Error(errstr)
+		panic(err)
+	}
+
+	ourmongo.SetDatabaseAndCollection(conf.MongoDB.DatabaseName, conf.MongoDB.CollectionSTR)
+
+	// now for debug - print mongo setup
+	mongoinfostr := fmt.Sprintf("MongoDB client settings: \n %+v \n", ourmongo)
+	log.Info(mongoinfostr)
 }
