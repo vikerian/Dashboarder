@@ -4,6 +4,7 @@ import (
 	"context"
 	"time"
 
+	"github.com/k0kubun/pp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -54,7 +55,9 @@ func (mg *MongoDB) GetAllDocumentsByCollection(colname string) (docs documents, 
 		if err = cursor.Decode(&singleResult); err != nil {
 			return
 		}
-		docs = docs.append(singleResult)
+		pp.Print(singleResult)
+		docs = append(docs, singleResult)
 	}
+	pp.Print(docs)
 	return
 }

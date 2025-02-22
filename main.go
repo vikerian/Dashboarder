@@ -2,10 +2,12 @@ package main
 
 import (
 	"dashboarder/config"
-	"dashboarder/mongo"
+	mg "dashboarder/mongo"
 	"fmt"
 	"log/slog"
 	"os"
+
+	"github.com/k0kubun/pp"
 	//"github.com/k0kubun/pp"
 )
 
@@ -41,7 +43,7 @@ func main() {
 	// create mongo connection
 	infomsg = "Setting up connection to mongo database..."
 	log.Info(infomsg)
-	ourmongo, err := mongo.New(conf.MongoDB.Url)
+	ourmongo, err := mg.New(conf.MongoDB.Url)
 	if err != nil {
 		errstr := fmt.Sprintf("Error on connecting to mongo database: %v", err)
 		log.Error(errstr)
@@ -53,4 +55,12 @@ func main() {
 	// now for debug - print mongo setup
 	mongoinfostr := fmt.Sprintf("MongoDB client settings: \n %+v \n", ourmongo)
 	log.Info(mongoinfostr)
+
+	// get documents from atlasian mongo db (url MONGODB_URL in environment)
+	mongodocs, err := ourmongo.GetAllDocumentsByCollection("sample_mflix")
+	if err != nil {
+		panic(err)
+	}
+	log.Info("Documents from sample_mflix.comments collection: \n")
+	pp.Print(mongodocs)
 }
