@@ -1,17 +1,19 @@
 package main
 
 import (
+	"context"
 	"dashboarder/config"
 	mg "dashboarder/mongo"
 	"fmt"
 	"log/slog"
 	"os"
-
-	"github.com/k0kubun/pp"
+	"time"
 	//"github.com/k0kubun/pp"
 )
 
 var log *slog.Logger
+var ctx context.Context
+var CancelFunc context.CancelFunc
 
 // initialization
 func init() {
@@ -19,6 +21,8 @@ func init() {
 }
 
 func main() {
+	ctx, CancelFunc = context.WithTimeout(context.Background(), 5*time.Second)
+	defer CancelFunc()
 
 	// some welcomes and so
 	welcomeMsg := fmt.Sprintf("Dashboarder started up from binary %s...", os.Args[0])
@@ -43,7 +47,7 @@ func main() {
 	// create mongo connection
 	infomsg = "Setting up connection to mongo database..."
 	log.Info(infomsg)
-	ourmongo, err := mg.New(conf.MongoDB.Url)
+	ourmongo, err := mg.New(ctx, conf.MongoDB.Url)
 	if err != nil {
 		errstr := fmt.Sprintf("Error on connecting to mongo database: %v", err)
 		log.Error(errstr)
@@ -57,10 +61,12 @@ func main() {
 	log.Info(mongoinfostr)
 
 	// get documents from atlasian mongo db (url MONGODB_URL in environment)
-	mongodocs, err := ourmongo.GetAllDocumentsByCollection("sample_mflix")
+	mongodocs, err := ourmongo.GetAllDocumentsByCollection(ctx, conf.MongoDB.CollectionSTR)
 	if err != nil {
 		panic(err)
 	}
-	log.Info("Documents from sample_mflix.comments collection: \n")
-	pp.Print(mongodocs)
+	infomsg = fmt.Sprintf("Documents from %s.%s: \n", conf.MongoDB.DatabaseName, conf.MongoDB.CollectionSTR)
+	log.Info(infomsg)
+	infomsg = fmt.Sprintf("%+v", mongodocs)
+	log.Info(infomsg)
 }

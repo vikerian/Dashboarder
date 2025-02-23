@@ -2,9 +2,7 @@ package mongo
 
 import (
 	"context"
-	"time"
 
-	"github.com/k0kubun/pp"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -13,19 +11,17 @@ import (
 type MongoDB struct {
 	Url              string
 	Client           *mongo.Client
-	Ctx              context.Context
-	CancelFunc       context.CancelFunc
 	Database         *mongo.Database
 	Collections      []mongo.Collection
 	ActiveCollection mongo.Collection
 }
 
 /* New(string) -> Constructor */
-func New(uri string) (mg *MongoDB, err error) {
+func New(ctx context.Context, uri string) (mg *MongoDB, err error) {
 	mg = new(MongoDB)
 	mg.Url = uri
-	mg.Ctx, mg.CancelFunc = context.WithTimeout(context.Background(), 5*time.Second)
-	mg.Client, err = mongo.Connect(mg.Ctx, options.Client().ApplyURI(mg.Url))
+
+	mg.Client, err = mongo.Connect(ctx, options.Client().ApplyURI(mg.Url))
 	if err != nil {
 		return
 	}
@@ -42,22 +38,21 @@ func (mg *MongoDB) SetDatabaseAndCollection(databasestr, collectionstr string) {
 type documents []interface{}
 
 /* GetAllDocumentsByCollection -> get all docs from collection */
-func (mg *MongoDB) GetAllDocumentsByCollection(colname string) (docs documents, err error) {
+func (mg *MongoDB) GetAllDocumentsByCollection(ctx context.Context, colname string) (docs documents, err error) {
 	if colname != "" {
 		mg.ActiveCollection = *mg.Database.Collection(colname)
 	}
-	cursor, err := mg.ActiveCollection.Find(mg.Ctx, bson.D{})
+	cursor, err := mg.ActiveCollection.Find(ctx, bson.D{})
 	if err != nil {
 		return
 	}
-	for cursor.Next(mg.Ctx) {
-		var singleResult interface{}
+
+	var singleResult interface{}
+	for cursor.Next(ctx) {
 		if err = cursor.Decode(&singleResult); err != nil {
 			return
 		}
-		pp.Print(singleResult)
 		docs = append(docs, singleResult)
 	}
-	pp.Print(docs)
 	return
 }

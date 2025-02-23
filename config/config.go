@@ -9,6 +9,9 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+const testDB = "sample_mflix"
+const testCollection = "comments"
+
 /* Import libs */
 
 /* Types */
@@ -80,7 +83,7 @@ func GetConfig() (*Config, error) {
 	cfg.SiriDB.Database = "devel"
 	cfg.MongoDB.Url = os.Getenv("MONGODB_URL")
 	cfg.MongoDB.Options = options.Client().ApplyURI(cfg.MongoDB.Url)
-	cfg.MongoDB.DatabaseName = "sample_guides"
-	cfg.MongoDB.CollectionSTR = "planets"
+	cfg.MongoDB.DatabaseName = testDB
+	cfg.MongoDB.CollectionSTR = testCollection
 	return cfg, nil
 }
