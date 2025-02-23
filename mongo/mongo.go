@@ -32,7 +32,6 @@ func New(ctx context.Context, uri string) (mg *MongoDB, err error) {
 func (mg *MongoDB) SetDatabaseAndCollection(databasestr, collectionstr string) {
 	mg.Database = mg.Client.Database(databasestr)
 	mg.ActiveCollection = *mg.Database.Collection(collectionstr)
-
 }
 
 type documents []interface{}

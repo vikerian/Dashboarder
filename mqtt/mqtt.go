@@ -58,5 +58,7 @@ func (mqt *Mqtt) SetupParam(key string, val interface{}) {
 	case "tls_config":
 		mqt.TlsConfig = val.(tls.Config)
 	}
-	mqt.Client = mqt.Client
 }
+
+// Connect -> connect to mqtt and authorize ourselves
+func (mqt *Mqtt) Connect()
