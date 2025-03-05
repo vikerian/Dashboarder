@@ -4,6 +4,7 @@ import (
 	"context"
 	"dashboarder/config"
 	mg "dashboarder/mongo"
+	mqtt "dashboarder/mqtt"
 	"fmt"
 	"log/slog"
 	"os"
@@ -69,4 +70,16 @@ func main() {
 	log.Info(infomsg)
 	infomsg = fmt.Sprintf("%+v", mongodocs)
 	log.Info(infomsg)
+
+	// now try mqtt
+	log.Info("Starting up connection to mqtt ...")
+	mqt := mqtt.New()
+	mqt.SetupParam("url", conf.Mqtt.Url)
+	mqt.SetupParam("client_id", conf.Mqtt.ClientID)
+	log.Info("Connection to mqtt tryout...")
+	err = mqt.Connect()
+	if err != nil {
+		panic(err)
+	}
+	log.Info("Connection OK...")
 }

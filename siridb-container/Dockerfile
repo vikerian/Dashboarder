@@ -47,7 +47,5 @@ RUN apk update \
  && chmod +x /usr/local/bin/*
 
 EXPOSE 9000
-EXPOSE 9010
-EXPOSE 9200
-EXPOSE 9020
- CMD ["/usr/local/bin/siridb-server", "--log-level", "debug"]
+
+CMD ["/usr/local/bin/siridb-server", "--log-level", "debug"]

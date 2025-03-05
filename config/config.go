@@ -48,10 +48,8 @@ type Config struct {
 	Cancel context.CancelFunc
 
 	Mqtt struct {
-		Host      string
-		Port      string
-		User      string
-		Password  string
+		Url       string
+		ClientID  string
 		Topics    []string
 		CaCRT     []byte
 		TlsConfig tls.Config
@@ -85,5 +83,7 @@ func GetConfig() (*Config, error) {
 	cfg.MongoDB.Options = options.Client().ApplyURI(cfg.MongoDB.Url)
 	cfg.MongoDB.DatabaseName = testDB
 	cfg.MongoDB.CollectionSTR = testCollection
+	cfg.Mqtt.Url = "tcp://test.mosquitto.org:1883" // for now mock setting, to future os.Getenv("MQTT_URL")
+	cfg.Mqtt.ClientID = "testing_client/0.01"
 	return cfg, nil
 }

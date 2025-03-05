@@ -1,25 +1,22 @@
 ---
 services:
   siridb:
-    image: siridb:latest
+    #image: siridb:latest
     build: siridb-container/.
     ports:
-      - "9000:9000"
-      - "9020:9020"
-    expose:
-      - "9000:9000"
-      - "9020:9020"
+      - 9000:9000
+      - 9020:9020
     volumes:
       - "./siridb-data:/var/lib/siridb"
       
-#  mongodb:
-#    image: mongodb/mongodb-community-server:latest
-#    restart: unless-stopped
-#    environment:
-#      MONGO_INITDB_ROOT_USERNAME: root
-#      MONGO_INITDB_ROOT_PASSWORD: mongopwpass
-#    ports:
-#      - 8081:8081
-#    volumes:
-#      - 
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongopwpass
+    ports:
+      - 8081:8081
+    volumes:
+      - "./mongo-data:/data/db"
     
