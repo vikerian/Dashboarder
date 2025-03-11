@@ -4,7 +4,7 @@ import (
 	"context"
 	"dashboarder/config"
 	mg "dashboarder/mongo"
-	mqtt "dashboarder/mqtt"
+//	mqtt "dashboarder/mqtt"
 	"fmt"
 	"log/slog"
 	"os"
@@ -12,13 +12,13 @@ import (
 	//"github.com/k0kubun/pp"
 )
 
-var log *slog.Logger
+var Log *slog.Logger
 var ctx context.Context
 var CancelFunc context.CancelFunc
 
 // initialization
 func init() {
-	log = slog.New(slog.NewJSONHandler(os.Stdout, nil))
+	Log = slog.New(slog.NewJSONHandler(os.Stdout, nil))
 }
 
 func main() {
@@ -27,31 +27,31 @@ func main() {
 
 	// some welcomes and so
 	welcomeMsg := fmt.Sprintf("Dashboarder started up from binary %s...", os.Args[0])
-	log.Info(welcomeMsg)
-	defer log.Info("Dashboarder quitting...")
+	Log.Info(welcomeMsg)
+	defer Log.Info("Dashboarder quitting...")
 
 	// config get
 	infomsg := "Loading configuration ..."
-	log.Info(infomsg)
+	Log.Info(infomsg)
 	var conf *config.Config
 	conf, err := config.GetConfig()
 	if err != nil {
 		errstr := fmt.Sprintf("Error on reading configuration: %v", err)
-		log.Error(errstr)
+		Log.Error(errstr)
 		panic(err)
 	}
 
 	// for now print config
 	confstr := fmt.Sprintf("Configuration: \n %v+ \n", conf)
-	log.Info(confstr)
+	Log.Info(confstr)
 
 	// create mongo connection
 	infomsg = "Setting up connection to mongo database..."
-	log.Info(infomsg)
+	Log.Info(infomsg)
 	ourmongo, err := mg.New(ctx, conf.MongoDB.Url)
 	if err != nil {
 		errstr := fmt.Sprintf("Error on connecting to mongo database: %v", err)
-		log.Error(errstr)
+		Log.Error(errstr)
 		panic(err)
 	}
 
@@ -59,7 +59,7 @@ func main() {
 
 	// now for debug - print mongo setup
 	mongoinfostr := fmt.Sprintf("MongoDB client settings: \n %+v \n", ourmongo)
-	log.Info(mongoinfostr)
+	Log.Info(mongoinfostr)
 
 	// get documents from atlasian mongo db (url MONGODB_URL in environment)
 	mongodocs, err := ourmongo.GetAllDocumentsByCollection(ctx, conf.MongoDB.CollectionSTR)
@@ -67,19 +67,9 @@ func main() {
 		panic(err)
 	}
 	infomsg = fmt.Sprintf("Documents from %s.%s: \n", conf.MongoDB.DatabaseName, conf.MongoDB.CollectionSTR)
-	log.Info(infomsg)
+	Log.Info(infomsg)
 	infomsg = fmt.Sprintf("%+v", mongodocs)
-	log.Info(infomsg)
+	Log.Info(infomsg)
 
 	// now try mqtt
-	log.Info("Starting up connection to mqtt ...")
-	mqt := mqtt.New()
-	mqt.SetupParam("url", conf.Mqtt.Url)
-	mqt.SetupParam("client_id", conf.Mqtt.ClientID)
-	log.Info("Connection to mqtt tryout...")
-	err = mqt.Connect()
-	if err != nil {
-		panic(err)
-	}
-	log.Info("Connection OK...")
 }

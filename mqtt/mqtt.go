@@ -9,46 +9,39 @@ import (
 var mqttUrl string
 
 type Mqtt struct {
-	Url       string
-	ClientID  string
-	Topics    []string
+	Url       string // Url is tcp://user:password@host:port
+	ClientID  string // Set on Newclient, otherwise generated uuid -> last 8 chars without --
+	opts	  *mqtt.ClientOptions
+	Topics    []string // 
+	caCrtPATH string
 	CaCRT     []byte
 	TlsConfig tls.Config
 	Client    mqtt.Client
 }
 
-// New -> return clean instance
-func New() *Mqtt {
-	return new(Mqtt)
-}
-
-// Setup -> setup instance params
-func (mqt *Mqtt) SetupParam(key string, val interface{}) {
-	switch key {
-	case "url", "URL", "Url":
-		mqt.Url = val.(string)
-	case "topics":
-		mqt.Topics = val.([]string)
-	case "ca-crt", "cacrt", "ca_crt":
-		mqt.CaCRT = val.([]byte)
-	case "tlsconfig", "tls-config", "tls_config":
-		mqt.TlsConfig = val.(tls.Config)
-	case "clientID", "client_id":
-		mqt.ClientID = val.(string)
+/* NewClient => constructor
+ *	-> InputParams: 
+ *		string uri -> url in format tcp://user:pass@host:port
+ *		string caCrtPath -> path on filesystem to CA certificate (yes have to be mounted RO to container)
+ *	-> return clean instance filled with params from constructor
+*/
+func NewClient(string uri, string caCrtPath) *Mqtt {
+	return &Mqtt{
+		Url: uri,
+		caCrtPATH: caCrtPath
 	}
 }
 
-// Connect -> connect to mqtt and authorize ourselves
-func (mqt *Mqtt) Connect() (err error) {
-	// create client with options
-	clhOPTS := mqtt.NewClientOptions()
-	// add login url
-	clhOPTS.AddBroker(mqt.Url)
-	// add client id
-	clhOPTS.SetClientID(mqt.ClientID)
-	mqt.Client = mqtt.NewClient(clhOPTS)
-	if token := mqt.Client.Connect(); token.Wait() && token.Error() != nil {
-		return token.Error()
-	}
-	return nil
-}
+/* SetupConnection -> setup parameters for connection
+ * inputs:
+ *   string username
+ *   string password
+ *   if tls, then *tls.Config, otherwise nil
+ * returns:
+ *   bool ok
+ *   error if any occured
+*/
+func (mqt *Mqtt) SetupConnection(user string, password string, tlsConf *tls.Config, ) (bool ok, err error) {
+	
+	return
+}	
