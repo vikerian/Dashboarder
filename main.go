@@ -4,7 +4,9 @@ import (
 	"context"
 	"dashboarder/config"
 	mg "dashboarder/mongo"
-//	mqtt "dashboarder/mqtt"
+	"dashboarder/mqtt"
+
+	//	mqtt "dashboarder/mqtt"
 	"fmt"
 	"log/slog"
 	"os"
@@ -72,4 +74,6 @@ func main() {
 	Log.Info(infomsg)
 
 	// now try mqtt
+	mqt := mqtt.NewClient(conf.Mqtt.Url, nil)
+
 }

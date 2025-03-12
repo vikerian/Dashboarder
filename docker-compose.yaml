@@ -20,3 +20,8 @@ services:
     volumes:
       - "./mongo-data:/data/db"
     
+  mqtt:
+    build: mqtt-container/.
+    ports:
+      - 1883:1883
+
