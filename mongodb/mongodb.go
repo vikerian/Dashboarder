@@ -1,4 +1,4 @@
-package mongo
+package mongodb
 
 import (
 	"context"
@@ -51,7 +51,8 @@ func (mg *MongoDB) GetAllDocumentsByCollection(ctx context.Context, colname stri
 		if err = cursor.Decode(&singleResult); err != nil {
 			return
 		}
-		docs = append(docs, singleResult)
+		sr := singleResult.(interface{})
+		docs = append(docs, sr)
 	}
 	return
 }
