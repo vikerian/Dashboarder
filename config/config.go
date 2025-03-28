@@ -3,7 +3,6 @@ package config
 import (
 	"context"
 	"crypto/tls"
-	"os"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -79,7 +78,7 @@ func GetConfig() (*Config, error) {
 	cfg.SiriDB.AdminUsername = "sa"
 	cfg.SiriDB.AdminPassword = "siri"
 	cfg.SiriDB.Database = "devel"
-	cfg.MongoDB.Url = os.Getenv("MONGODB_URL")
+	cfg.MongoDB.Url = "mongodb://localhost:27017"
 	cfg.MongoDB.Options = options.Client().ApplyURI(cfg.MongoDB.Url)
 	cfg.MongoDB.DatabaseName = testDB
 	cfg.MongoDB.CollectionSTR = testCollection

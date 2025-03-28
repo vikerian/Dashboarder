@@ -4,7 +4,6 @@ import (
 	"context"
 	"dashboarder/config"
 	mg "dashboarder/mongo"
-	"dashboarder/mqtt"
 
 	//	mqtt "dashboarder/mqtt"
 	"fmt"
@@ -72,8 +71,5 @@ func main() {
 	Log.Info(infomsg)
 	infomsg = fmt.Sprintf("%+v", mongodocs)
 	Log.Info(infomsg)
-
-	// now try mqtt
-	mqt := mqtt.NewClient(conf.Mqtt.Url, nil)
 
 }
