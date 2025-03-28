@@ -1,8 +1,8 @@
 ---
 services:
   siridb:
-    #image: siridb:latest
-    build: siridb-container/.
+    image: siridb:latest-aarch64
+    build: siridb-container/
     ports:
       - 9000:9000
       - 9020:9020

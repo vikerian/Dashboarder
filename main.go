@@ -3,7 +3,7 @@ package main
 import (
 	"context"
 	"dashboarder/config"
-	mg "dashboarder/mongo"
+	mg "dashboarder/mongodb"
 	"dashboarder/mqtt"
 
 	//	mqtt "dashboarder/mqtt"
@@ -11,6 +11,8 @@ import (
 	"log/slog"
 	"os"
 	"time"
+
+	"github.com/k0kubun/pp"
 	//"github.com/k0kubun/pp"
 )
 
@@ -74,6 +76,9 @@ func main() {
 	Log.Info(infomsg)
 
 	// now try mqtt
-	mqt := mqtt.NewClient(conf.Mqtt.Url, nil)
-
+	mqt, err := mqtt.New(conf.Mqtt.Url, "")
+	if err != nil {
+		panic(err)
+	}
+	pp.Printf("MQTT client: %v", mqt)
 }
