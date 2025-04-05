@@ -1,6 +1,6 @@
 module dashboarder
 
-go 1.19
+go 1.22
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.0
