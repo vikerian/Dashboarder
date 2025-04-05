@@ -6,18 +6,32 @@ import (
 	// "go.mongodb.org/mongo-driver/mongo"
 	// "go.mongodb.org/mongo-driver/mongo/options"
 
+	"context"
+
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-var mc *mongo.Client
+type MongoDB struct {
+	Clh    *mongo.Client
+	Ctx    context.Context
+	Cancel context.CancelFunc
+}
 
 // Constructor for our connection
-func New(connstr string) (*mongo.Client, error) {
+func New(connstr string) (*MongoDB, error) {
+	mc = new(MongoDB)
 	cli, err := mongo.NewClient(options.Client().ApplyURI(connstr))
 	if err != nil {
 		return nil, err
 	}
-	mc = cli
-	return cli, nil
+	mc.Clh = cli
+
+	return mc, nil
+}
+
+// Connect
+func (mdb *MongoDB) Connect() (ok bool, err error) {
+
+	return
 }
