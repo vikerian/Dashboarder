@@ -4,6 +4,7 @@ go 1.22
 
 require (
 	github.com/eclipse/paho.mqtt.golang v1.5.0
+	github.com/google/uuid v1.6.0
 	github.com/k0kubun/pp v3.0.1+incompatible
 	go.mongodb.org/mongo-driver v1.17.2
 )
