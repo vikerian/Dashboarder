@@ -1,0 +1,11 @@
+FROM alpine:3.21 as builder
+
+RUN apk add gcc gcc-aarch64-none-elf curl curl-dev nss nss-dev gnutls gnutls-dev \
+    git bash psutils psutils-dev py3-wheel musl-dev ninja-build
+RUN /bin/bash \
+    && python3 -m venv venv \
+    && source ./venv/bin/activate \
+    && git clone https://github.com/mongodb/mongo.git \
+    && cd mongo; ./buildscripts/poetry_sync.sh \
+    && pip wheel --no-cache-dir --use-pep517 "psutil (==6.1.1)" \
+    && 

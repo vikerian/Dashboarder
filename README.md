@@ -29,3 +29,9 @@ MongoDB:
 	- NOSQL document storage database
 
 ---
+
+Run mongo on podman:
+
+podman pull docker.io/mongodb/mongodb-community-server:latest
+podman run --detach --name mongo -p 27017:27017 -v ./mongo-data:/data/db docker.io/mongodb/mongodb-community-server:latest
+

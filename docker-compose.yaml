@@ -10,13 +10,13 @@ services:
       - "./siridb-data:/var/lib/siridb"
       
   mongodb:
-    image: mongodb/mongodb-community-server:latest
+    image: mongo:latest
     restart: unless-stopped
     environment:
       MONGO_INITDB_ROOT_USERNAME: root
       MONGO_INITDB_ROOT_PASSWORD: mongopwpass
     ports:
-      - 8081:8081
+      - 27017:27017
     volumes:
       - "./mongo-data:/data/db"
     

@@ -11,9 +11,10 @@ import (
 	"fmt"
 	"time"
 
+	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
-	
+
 	"github.com/google/uuid"
 )
 
@@ -65,7 +66,7 @@ func New(connstr string) (mdb *MongoDB, err error) {
 
 // SetDBbCollection -> set which db and connection we are using right now
 // take params:
-// dbName -> string -> database name 
+// dbName -> string -> database name
 // colname -> string -> collection name
 func (mdb *MongoDB) SetDBCollection(dbName string, colname string) {
 	mdb.DatabaseName = dbName
@@ -79,10 +80,10 @@ func (mdb *MongoDB) SetDBCollection(dbName string, colname string) {
 // name -> string -> document name or if "", func will generate document-Year-Month-Day_Minute-Second
 // docContent -> []byte -> raw document
 // tags -> []string -> array of tags for document
-// returns "",err if error, 
+// returns "",err if error,
 // otherwise string ObjectID("[id of our stored doc]")
-func (mdb *MongoDB) InsertDoc(id string, name string,docContent []byte,tags []string) (saveID string, err error) {
-	// actual time 
+func (mdb *MongoDB) InsertDoc(id string, name string, docContent []byte, tags []string) (saveID string, err error) {
+	// actual time
 	atime := time.Now()
 	// set id if none
 	if id == "" {
@@ -90,22 +91,35 @@ func (mdb *MongoDB) InsertDoc(id string, name string,docContent []byte,tags []st
 	}
 	// set name if none
 	if name == "" {
-		name = fmt.Sprintf("document-%d-%d-%d_%d-%d",atime.Year(),atime.Month(),atime.Day(),atime.Minute(),atime.Second())
+		name = fmt.Sprintf("document-%d-%d-%d_%d-%d", atime.Year(), atime.Month(), atime.Day(), atime.Minute(), atime.Second())
 	}
 	var doc = Document{
-		ID: id,
-		Name: name,
+		ID:      id,
+		Name:    name,
 		Content: docContent,
-		Tags: tags,
+		Tags:    tags,
 		Created: atime,
-	}				
-		
+	}
+
 	// save document to db
 	result, err := mdb.Cursor.InsertOne(mdb.Ctx, doc)
 	if err != nil {
 		return "", err
 	}
-	// get saved object id 
-	saveID = fmt.Sprintf("%v",result.InsertedID)
+	// get saved object id
+	saveID = fmt.Sprintf("%v", result.InsertedID)
 	return saveID, nil
+}
+
+// RetrieveDocName -> retrieve first doc by params
+// take params:
+// name -> string -> part of name or whole name to search by
+// return:
+// Document -> type Document -> retrieved doc
+// Err -> type error -> if any error
+func (mdb *MongoDB) RetrieveDocName(name string) (doc Document, err error) {
+	nameFilterSTR := fmt.Sprintf("{ $regex: /%s/i", name)
+	filter := bson.M{"name": nameFilterSTR}
+	err = mdb.Cursor.FindOne(mdb.Ctx, filter).Decode(&doc)
+	return
 }
