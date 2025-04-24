@@ -20,10 +20,11 @@
 
 VALKEY.IO 
 	- Fork and continuer of redis:
-	- docker image: valkey/valkey:8.0.2-alpine3.21
+	- docker image: valkey/valkey:8.1.1-alpine3.21
 
 SiriDB:
 	- Timeline database written in C++
+    - Run (build) from : ./ContainerFiles/SiriDB-Containerfile
 
 MongoDB:
 	- NOSQL document storage database
@@ -34,4 +35,7 @@ Run mongo on podman:
 
 podman pull docker.io/mongodb/mongodb-community-server:latest
 podman run --detach --name mongo -p 27017:27017 -v ./mongo-data:/data/db docker.io/mongodb/mongodb-community-server:latest
+
+Run valkey on podman:
+podman run -d -p "6379:6379" --name valkey "valkey/valkey:8.1.1-alpine3.21"
 

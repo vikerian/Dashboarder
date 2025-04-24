@@ -1,0 +1,27 @@
+---
+services:
+  siridb:
+    image: siridb:latest-aarch64
+    build: siridb-container/
+    ports:
+      - 9000:9000
+      - 9020:9020
+    volumes:
+      - "./siridb-data:/var/lib/siridb"
+      
+  mongodb:
+    image: mongo:latest
+    restart: unless-stopped
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: mongopwpass
+    ports:
+      - 27017:27017
+    volumes:
+      - "./mongo-data:/data/db"
+    
+  mqtt:
+    build: mqtt-container/.
+    ports:
+      - 1883:1883
+
