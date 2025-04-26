@@ -1,0 +1,18 @@
+FROM alpine:3.21 as builder
+
+USER root
+
+RUN echo "https://mirror.fel.cvut.cz/alpine/v3.21/main" > /etc/apk/repositories \
+    && echo "https://mirror.fel.cvut.cz/alpine/v3.21/community" >> /etc/apk/repositories \
+    && apk update && apk upgrade && apk add go
+
+ADD ./src /
+
+RUN cd /src && go build . && cp ./Dashboarder /
+
+
+FROM alpine:3.21 
+
+COPY --from=builder /Dashboarder /
+
+ENTRYPOINT /Dashboarder

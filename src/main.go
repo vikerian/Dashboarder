@@ -30,6 +30,9 @@ func main() {
 	_, err := conf.LoadConfiguration()
 	if err != nil {
 		logger.Error(fmt.Sprintf("Error on configuration load: %+v", err))
+		logger.Error("We need these env variables setted:")
+		logger.Error("MQTT_URL, MQTT_AUTH, VALKEY_URL, VALKEY_AUTH, SIRIDB_URL, SIRIDB_AUTH")
+		logger.Error("AUTH format is token or user:pass, for now in base64 encoding...")
 		panic(err)
 	}
 

@@ -1,0 +1,56 @@
+package main
+
+import (
+	"encoding/base64"
+	"fmt"
+	"os"
+)
+
+// EnvVar represents an environment variable with its key and decoded value
+type EnvVar struct {
+	Key   string
+	Value string
+}
+
+// getEnvVars reads specified environment variables and decodes their base64 values
+func getEnvVars(keys []string) ([]EnvVar, error) {
+	var envVars []EnvVar
+
+	for _, key := range keys {
+		// Get environment variable
+		encodedValue := os.Getenv(key)
+		if encodedValue == "" {
+			return nil, fmt.Errorf("environment variable %s not found", key)
+		}
+
+		// Decode base64 value
+		decodedBytes, err := base64.StdEncoding.DecodeString(encodedValue)
+		if err != nil {
+			return nil, fmt.Errorf("failed to decode base64 for %s: %v", key, err)
+		}
+
+		envVars = append(envVars, EnvVar{
+			Key:   key,
+			Value: string(decodedBytes),
+		})
+	}
+
+	return envVars, nil
+}
+
+func main() {
+	// List of environment variable keys to read
+	envKeys := []string{"DB_PASSWORD", "API_KEY", "SECRET_TOKEN"}
+
+	// Get and decode environment variables
+	envVars, err := getEnvVars(envKeys)
+	if err != nil {
+		fmt.Printf("Error: %v\n", err)
+		os.Exit(1)
+	}
+
+	// Print decoded values
+	for _, envVar := range envVars {
+		fmt.Printf("%s: %s\n", envVar.Key, envVar.Value)
+	}
+}
