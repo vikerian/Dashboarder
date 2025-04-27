@@ -27,7 +27,7 @@ func main() {
 	defer logger.Info("Dashboarder ending...")
 
 	// load configuration
-	_, err := conf.LoadConfiguration()
+	err := conf.LoadConfiguration()
 	if err != nil {
 		logger.Error(fmt.Sprintf("Error on configuration load: %+v", err))
 		logger.Error("We need these env variables setted:")
@@ -35,5 +35,6 @@ func main() {
 		logger.Error("AUTH format is token or user:pass, for now in base64 encoding...")
 		panic(err)
 	}
-
+	// debug needed for data:
+	logger.Info(fmt.Sprintf("conf data: %+v", conf))
 }
