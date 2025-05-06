@@ -37,4 +37,9 @@ func main() {
 	}
 	// debug needed for data:
 	logger.Info(fmt.Sprintf("conf data: %+v", conf))
+
+	// tryout mongo
+	mongoDB, err := NewMongo("mongodb://localhost:27017")
+	// debug info
+	logger.Info(fmt.Sprintf("MongoCLI data: %v", mongoDB))
 }
