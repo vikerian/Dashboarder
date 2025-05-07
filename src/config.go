@@ -2,10 +2,7 @@ package main
 
 // import libs
 import (
-	"bytes"
-	"encoding/base64"
 	"errors"
-	"fmt"
 	"os"
 )
 
@@ -69,20 +66,20 @@ func (cf *Config) LoadConfiguration() (err error) {
 		return errors.New("Missing SIRIDB_AUTH in environment")
 	}
 
-	cf.MongoURL, ok = os.LookupEnv("MONGODB_URL")
+	cf.MongoURL, ok = os.LookupEnv("MONGO_URL")
 	if !ok {
-		return errors.New("Missing MONGODB_URL in environment")
+		return errors.New("Missing MONGO_URL in environment")
 	}
 
-	cf.MongoAUTH, ok = os.LookupEnv("MONGODB_AUTH")
+	cf.MongoAUTH, ok = os.LookupEnv("MONGO_AUTH")
 	if !ok {
-		return errors.New("Missing MONGODB_AUTHh in environment")
+		return errors.New("Missing MONGO_AUTH in environment")
 	}
 	return
 }
 
 // DecodeAuth -> deocde authentication from b64, return decoded data as AuthVAR instance
-func DecodeAuth(in string) (av AuthVAR, err error) {
+/*func DecodeAuth(in string) (av AuthVAR, err error) {
 	var buffer bytes.Buffer
 	data, err := base64.StdEncoding.DecodeString(in)
 	if err != nil {
@@ -95,3 +92,4 @@ func DecodeAuth(in string) (av AuthVAR, err error) {
 
 	return
 }
+*/

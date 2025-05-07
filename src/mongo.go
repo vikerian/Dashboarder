@@ -15,11 +15,15 @@ import (
 
 // MongoCLI -> for mongo client instance based on https://www.mongodb.com/docs/drivers/go/current/fundamentals/connections/connection-guide/#std-label-golang-connection-guide
 type MongoCLI struct {
-	URL  string // url in format mongodb://user:pass@fqdn:port/?connection_options
-	CTX  context.Context
-	CANC context.CancelFunc
-	CLH  *mongo.Client
-	OPTS *options.ClientOptions
+	URL        string // url in format mongodb://user:pass@fqdn:port/?connection_options
+	CTX        context.Context
+	CANC       context.CancelFunc
+	CLH        *mongo.Client
+	OPTS       *options.ClientOptions
+	DB         *mongo.Database
+	COL        *mongo.Collection
+	DBNAME     string
+	COLLECTION string
 }
 
 // NewMongo -> constructor
@@ -30,5 +34,26 @@ func NewMongo(url string) (mc *MongoCLI, err error) {
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	mc.OPTS = options.Client().ApplyURI(url).SetServerAPIOptions(serverAPI)
 	mc.CLH, err = mongo.Connect(mc.OPTS)
+	if err != nil {
+		return nil, err
+	}
 	return
+}
+
+// SetDBCollection -> set database name and collection
+func (mc *MongoCLI) SetDBCollection(dbNAME, dbCOLL string) {
+	mc.DBNAME = dbNAME
+	mc.COLLECTION = dbCOLL
+	mc.COL = mc.CLH.Database(dbNAME).Collection(dbCOLL)
+	return
+}
+
+// GetDB -> get database name
+func (mc *MongoCLI) GetDB() string {
+	return mc.DBNAME
+}
+
+// GetCollection -> returns collection name
+func (mc *MongoCLI) GetCollection() string {
+	return mc.COLLECTION
 }
