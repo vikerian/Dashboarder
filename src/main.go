@@ -60,5 +60,28 @@ func main() {
 	mongoDB.SetDBCollection(TestDbNAME, TestDbCOLLECTION)
 	// now show setting for mongodb
 
+	// debug
 	logger.Info(fmt.Sprintf("MongoCLI data: %v", mongoDB))
+
+	// debug - list databases
+	logger.Info("List of mongo databases:")
+	databases, err := mongoDB.GetDatabases()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Error on getting database list: %v", err))
+		panic(err)
+	}
+	for _, val := range databases {
+		logger.Info(fmt.Sprintf("Database: %s", val))
+	}
+	// debug get all docs
+	logger.Info("List of docs:")
+	var docs []interface{}
+	docs, err = mongoDB.GetAllDocs()
+	if err != nil {
+		logger.Error(fmt.Sprintf("Error on retrieving documents: %v", err))
+		panic(err)
+	}
+	for _, val := range docs {
+		logger.Info(fmt.Sprintf("Document: %+v", val))
+	}
 }

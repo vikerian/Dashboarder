@@ -2,8 +2,6 @@ module Dashboarder
 
 go 1.21
 
-replace config => ./config
-
 require go.mongodb.org/mongo-driver/v2 v2.2.1
 
 require (
