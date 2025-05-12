@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"time"
 
 	"go.mongodb.org/mongo-driver/v2/bson"
@@ -89,5 +90,28 @@ func (mc *MongoCLI) GetAllDocs() (docs []interface{}, err error) {
 		return
 	}
 	err = cursor.All(mc.CTX, &docs)
+	return
+}
+
+// GetDocKV -> get document by key:value filter
+func (mc *MongoCLI) GetDocKV(key string, val string) (doc []interface{}, err error) {
+	filter, err := mc.COL.Find(mc.CTX, bson.M{key: val})
+	if err != nil {
+		return
+	}
+	err = filter.All(mc.CTX, &doc)
+	return
+}
+
+// GetDocIDKV -> get only doc id , filter by key:value
+func (mc *MongoCLI) GetDocIDKV(key string, val string) (docids []string, err error) {
+	docs, err := mc.GetDocKV(key, val)
+	if err != nil {
+		return
+	}
+	for _, document := range docs {
+		fmt.Printf("document: %+v", document.(bson.M)["_id"])
+		//docids = append(docids, document.(bson.D{primitive.E{Key: "_id", Value: oId}).String())
+	}
 	return
 }

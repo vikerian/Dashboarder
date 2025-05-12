@@ -84,4 +84,12 @@ func main() {
 	for _, val := range docs {
 		logger.Info(fmt.Sprintf("Document: %+v", val))
 	}
+
+	// try get document id
+	doc, err := mongoDB.GetDocKV("title", "Alice")
+	if err != nil {
+		logger.Error(fmt.Sprintf("Error on getting title alice: %v", err))
+		panic(err)
+	}
+	fmt.Printf("\n %+v \n", doc)
 }
