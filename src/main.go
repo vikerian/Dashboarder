@@ -49,7 +49,7 @@ func main() {
 	// tryout mongo
 
 	// get mongo url from env
-	mongoDB, err := NewMongo(conf.MongoURL)
+	mongoDB, err := NewMongoCLI(conf.MongoURL)
 	if err != nil {
 		logger.Error(fmt.Sprintf("Error connecting to mongodb: %v", err))
 		panic(err)
@@ -57,7 +57,7 @@ func main() {
 	// debug info
 	//logger.Info(fmt.Sprintf("MongoCLI data: %v", mongoDB))
 	// Set mongo db and collection
-	mongoDB.SetDBCollection(TestDbNAME, TestDbCOLLECTION)
+	mongoDB.SetDbAndCollection(TestDbNAME, TestDbCOLLECTION)
 	// now show setting for mongodb
 
 	// debug
