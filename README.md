@@ -26,15 +26,18 @@
   session data and such data which are not persistent).
 
 VALKEY.IO
- - Fork and continuer of redis:
- - docker image: valkey/valkey:8.1.1-alpine3.21
+
+- Fork and continuer of redis:
+- docker image: valkey/valkey:8.1.1-alpine3.21
 
 SiriDB:
- - Timeline database written in C++
-    - Run (build) from : ./ContainerFiles/SiriDB-Containerfile
+
+- Timeline database written in C++
+  - Run (build) from : ./ContainerFiles/SiriDB-Containerfile
 
 MongoDB:
- - NOSQL document storage database
+
+- NOSQL document storage database
 
 ---
 
