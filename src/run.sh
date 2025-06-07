@@ -9,4 +9,4 @@ export SIRIDB_AUTH="tcp://127.0.0.1:9000"
 export MONGO_URL="mongodb://127.0.0.1:27017"
 #export MONGO_AUTH="dGNwOi8vMTI3LjAuMC4xOjkwMDA"
 
-/usr/bin/go run .
+go run .

@@ -25,15 +25,20 @@ const (
 
 // DataItem represents a generic data item to be stored
 type DataItem struct {
+	Key interface{}
 	Data interface{}
 }
 
+// MongoDOC represents a document to store to MongoDB
+type MongoDODC struct {
+	Name string `bson:"_name"`
+
 // DatabaseConnection is an interface for different database connection
 type DatabaseConnection interface {
-	Connect() error
+	Connect(string,string,string) error
 	Disconnect() error
 	Store(data interface{}) (interface{}, error)
-	Get(key string) (interface{}, error)
+	Get(string) (DataItem, error)
 }
 
 // MongoDBConnection implements DatabaseConnection for MongoDB
@@ -44,31 +49,58 @@ type MongoDBConnection struct {
 	Ctx        *context.Context
 	Cnc        *context.CancelFunc
 	Clh        *mongo.Client
-	ClientOpt  *options.Options
+	Cursor	   *mongo.Collection
 }
 
-func (m *MongoDBConnection) Connect() error {
+// NewDataItem -> create dataitem instance, if specified key, it will be used in Store, otherwise key will be filled in Store method
+func NewDataItem(key interface{}, data interface{}) (*DataItem) {
+	return &DataItem{
+		Key: key,
+		Data: data,
+	}
+}
+
+// Connect - create connection to mongodb and verify it
+func (m *MongoDBConnection) Connect(uri string, dbname string, collection string) (err error) {
+	m.URI = uri
+	m.Database = dbname
+	m.Collection = collection
 	fmt.Println("Connecting  to MongoDB:", m.URI)
 	ctx, canc := context.WithTimeout(context.Background(), time.Duration(10)*time.Second)
 	m.Ctx = &ctx
 	m.Cnc = &canc
-
-	return nil
+	// create client with url - connection setup
+	m.clh,err = mongo.Connect(m.Ctx, options.Client().ApplyURI(m.URI))
+	if err != nil {
+		err = errors.New(fmt.Sprintf("Error on connection to MongoDB: %v", err))
+		return 
+	}
+	// verify connection as is
+	err = m.Clh.Ping(m.Ctx, nil)
+	if err != nil {
+		err = errors.New(fmt.Sprintf("Error on verifying connection to MongoDB: %v", err))
+	}
+	//create cursor
+	col, err := m.Clh.Database(m.Database).Collection(m.Collection)
+	m.Cursor = col
+	return 
 }
 
-func (m *MongoDBConnection) Disconnect() error {
+// Disconnect -> disconnect actual mongo connection
+func (m *MongoDBConnection) Disconnect() (err error) {
 	fmt.Println("Disconnecting from MongoDB")
-
-	return nil
+	err = m.Clh.Disconnect(m.Ctx)
+	return 
 }
 
-func (m *MongoDBConnection) Store(data interface{}) error {
-	fmt.Println("Storing complex JSON data in MongoDB: ", m.Database)
+// Store data into mongodb, returns key (_id) of documen /  error
+func (m *MongoDBConnection) Store(data DataItem) (key interface{}, err error) {
 
-	return nil
+	return 
 }
 
-func (m *MongoDBConnection) Get(key interface{}) error {
+func (m *MongoDBConnection) Get(key interface{}) (data DataItem, err error) {
+
 
 	return nil
 }
