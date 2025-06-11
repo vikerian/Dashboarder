@@ -32,7 +32,6 @@ func NewMongClient(dsn string) (*MongoDB, error) {
 	}
 	// create context and store it with its cancel function
 	ctx, canc := context.WithDeadline(contex.Background, 5*time.Second)
-    :x
 	m.CancFunc = canc
 
 	// create client, set it up and verify connection
