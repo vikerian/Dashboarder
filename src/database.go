@@ -1,5 +1,7 @@
 package main
 
+import "net/url"
+
 //	"go.mongodb.org/mongo-driver/bson"
 //	"go.mongodb.org/mongo-driver/bson/primitive"
 //	"go.mongodb.org/mongo-driver/mongo"
@@ -23,11 +25,8 @@ type DatabaseConnection interface {
 }
 
 type DatabaseConnectionInfo struct {
-	DbTYPE   int
-	DSN      string // dsn = database connection string in url format: mongodb://user@pass@fqdn:port/database
-	Username string
-	Password string
-	Token    string
-	Database string
-	Table    string
+	DbTYPE int
+	DSN    string // dsn = database connection string in url format: mongodb://user@pass@fqdn:port/database
+	URI    url.URL
+	Client interface{}
 }
