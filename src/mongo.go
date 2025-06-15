@@ -70,3 +70,11 @@ func (m *mongoDB) Connect(dsn string) error {
 func (m *mongoDB) Disconnect() {
 	m.Client.Disconnect(m.ClientCTX)
 }
+
+func (m *mongoDB) GetDoc(key interface{}) (doc interface{}, err error) {
+	return
+}
+
+func (m *mongoDB) SaveDoc(doc interface{}) (key interface{}, err error) {
+	return
+}
