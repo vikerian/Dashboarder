@@ -2,10 +2,12 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"net/url"
 	"time"
 
 	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
 	//"golang.org/x/net/context"
 )
 
@@ -23,11 +25,11 @@ const (
 
 type mongoDB struct {
 	URL              url.URL
-	DSN              string
+	DSN              string // dsn format: scheme://user:password@host:port/database
 	DatabaseNAME     string
 	CollectionNAME   string
 	Client           *mongo.Client
-	Cursor           *mongo.Collection
+	Collection       *mongo.Collection
 	ClientCTX        context.Context
 	ClientCancelFUNC context.CancelFunc
 }
@@ -63,7 +65,12 @@ func (m *mongoDB) Connect(dsn string) error {
 	m.ClientCancelFUNC = canc
 
 	// connect
+	// create url for connection
+	uri := fmt.Sprintf("%s://%s:%s/", m.URL.Scheme, m.URL.Host, m.URL.Port())
+	opts := options.Client().ApplyURI(uri)
+	if m.URL.User != nil {
 
+	}
 	return err
 }
 
@@ -72,6 +79,7 @@ func (m *mongoDB) Disconnect() {
 }
 
 func (m *mongoDB) GetDoc(key interface{}) (doc interface{}, err error) {
+
 	return
 }
 
