@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{.Title}}</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <div class="container">
+            <h1>Home Dashboard</h1>
+            <ul class="nav-links">
+                <li><a href="/">Overview</a></li>
+                <li><a href="/traffic">Traffic</a></li>
+                <li><a href="/sensors">Sensors</a></li>
+                <li><a href="/news">News</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <main class="container">
+        {{template "content" .}}
+    </main>
+    
+    <footer>
+        <p>Last updated: <span id="last-update">{{.Time}}</span></p>
+    </footer>
+    
+    <script src="/static/app.js"></script>
+</body>
+</html>

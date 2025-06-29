@@ -1,0 +1,66 @@
+{{template "base.html" .}}
+
+{{define "content"}}
+<div class="dashboard">
+    <h2>System Overview</h2>
+    
+    <div class="stats-grid">
+        <div class="stat-card">
+            <h3>MMDecin Articles</h3>
+            <div class="stat-value" id="article-count">-</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Active Traffic Incidents</h3>
+            <div class="stat-value" id="traffic-count">-</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>Connected Sensors</h3>
+            <div class="stat-value" id="sensor-count">-</div>
+        </div>
+        
+        <div class="stat-card">
+            <h3>System Time</h3>
+            <div class="stat-value" id="system-time">{{.Time}}</div>
+        </div>
+    </div>
+    
+    <div class="recent-section">
+        <h3>Recent Activity</h3>
+        <div id="recent-activity" class="activity-list">
+            <p>Loading...</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '{{.APIBaseURL}}';
+    
+    async function loadStats() {
+        try {
+            const response = await fetch(`${API_BASE}/stats`);
+            const data = await response.json();
+            
+            document.getElementById('article-count').textContent = data.mmdecin_articles || 0;
+            document.getElementById('traffic-count').textContent = data.traffic?.active || 0;
+            document.getElementById('sensor-count').textContent = data.sensors || 0;
+        } catch (error) {
+            console.error('Failed to load stats:', error);
+        }
+    }
+    
+    function updateTime() {
+        const now = new Date();
+        document.getElementById('system-time').textContent = now.toLocaleTimeString('cs-CZ');
+        document.getElementById('last-update').textContent = now.toLocaleTimeString('cs-CZ');
+    }
+    
+    // Load data on page load
+    loadStats();
+    
+    // Update every 30 seconds
+    setInterval(loadStats, 30000);
+    setInterval(updateTime, 1000);
+</script>
+{{end}}

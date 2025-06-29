@@ -1,0 +1,51 @@
+{{template "base.html" .}}
+
+{{define "content"}}
+<div class="traffic-page">
+    <h2>Traffic Incidents - Ústecký kraj</h2>
+    
+    <div class="filter-bar">
+        <button onclick="loadTraffic('active')" class="btn btn-primary">Active Only</button>
+        <button onclick="loadTraffic('all')" class="btn">All Incidents</button>
+    </div>
+    
+    <div id="traffic-list" class="incident-list">
+        <p>Loading traffic data...</p>
+    </div>
+</div>
+
+<script>
+    const API_BASE = '{{.APIBaseURL}}';
+    
+    async function loadTraffic(filter = 'active') {
+        const endpoint = filter === 'active' ? '/traffic/active' : '/traffic';
+        
+        try {
+            const response = await fetch(`${API_BASE}${endpoint}`);
+            const incidents = await response.json();
+            
+            const listEl = document.getElementById('traffic-list');
+            
+            if (incidents.length === 0) {
+                listEl.innerHTML = '<p>No traffic incidents found.</p>';
+                return;
+            }
+            
+            listEl.innerHTML = incidents.map(incident => `
+                <div class="incident-card ${incident.severity}">
+                    <h3>${incident.type}</h3>
+                    <p class="location">${incident.location}</p>
+                    <p class="description">${incident.description}</p>
+                    <p class="time">${new Date(incident.timestamp).toLocaleString('cs-CZ')}</p>
+                </div>
+            `).join('');
+        } catch (error) {
+            console.error('Failed to load traffic:', error);
+            document.getElementById('traffic-list').innerHTML = '<p>Error loading traffic data.</p>';
+        }
+    }
+    
+    // Load active incidents on page load
+    loadTraffic('active');
+</script>
+{{end}}

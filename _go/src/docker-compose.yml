@@ -1,0 +1,141 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Message broker
+  mosquitto:
+    image: eclipse-mosquitto:2
+    container_name: home-mqtt
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config:/mosquitto/config
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    restart: unless-stopped
+
+  # MongoDB for document storage
+  mongodb:
+    image: mongo:6
+    container_name: home-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: admin123
+      MONGO_INITDB_DATABASE: home_dashboard
+    volumes:
+      - mongodb_data:/data/db
+    restart: unless-stopped
+
+  # SiriDB for time-series data
+  siridb:
+    image: siridb/siridb:latest
+    container_name: home-siridb
+    ports:
+      - "9000:9000"
+      - "9080:9080"
+    volumes:
+      - siridb_data:/var/lib/siridb
+    environment:
+      SIRIDB_ADMIN_PASSWORD: siri
+    restart: unless-stopped
+
+  # Microservices
+  mmdecin-scraper:
+    build:
+      context: .
+      dockerfile: services/scraper-mmdecin/Dockerfile
+    container_name: mmdecin-scraper
+    environment:
+      MQTT_BROKER: tcp://mosquitto:1883
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017
+      MONGO_DB: home_dashboard
+      SIRIDB_HOST: siridb
+      SIRIDB_PORT: "9000"
+      SIRIDB_USER: iris
+      SIRIDB_PASS: siri
+    depends_on:
+      - mosquitto
+      - mongodb
+      - siridb
+    restart: unless-stopped
+
+  api-server:
+    build:
+      context: .
+      dockerfile: services/api-server/Dockerfile
+    container_name: api-server
+    ports:
+      - "8080:8080"
+    environment:
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017
+      MONGO_DB: home_dashboard
+      SIRIDB_HOST: siridb
+      SIRIDB_PORT: "9000"
+      SIRIDB_USER: iris
+      SIRIDB_PASS: siri
+      API_PORT: "8080"
+    depends_on:
+      - mongodb
+      - siridb
+    restart: unless-stopped
+
+  web-server:
+    build:
+      context: .
+      dockerfile: services/web-server/Dockerfile
+    container_name: web-server
+    ports:
+      - "8090:8090"
+    environment:
+      API_PORT: "8080"
+      WEB_PORT: "8090"
+    depends_on:
+      - api-server
+    restart: unless-stopped
+
+volumes:
+  mongodb_data:
+  siridb_data:
+
+# mosquitto/config/mosquitto.conf
+listener 1883
+allow_anonymous true
+
+listener 9001
+protocol websockets
+allow_anonymous true
+
+persistence true
+persistence_location /mosquitto/data/
+
+log_dest file /mosquitto/log/mosquitto.log
+log_type all
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017
+    depends_on:
+      - mosquitto
+      - mongodb
+    restart: unless-stopped
+
+  traffic-scraper:
+    build:
+      context: .
+      dockerfile: services/scraper-traffic/Dockerfile
+    container_name: traffic-scraper
+    environment:
+      MQTT_BROKER: tcp://mosquitto:1883
+      MONGO_URI: mongodb://admin:admin123@mongodb:27017
+    depends_on:
+      - mosquitto
+      - mongodb
+    restart: unless-stopped
+
+  data-router:
+    build:
+      context: .
+      dockerfile: services/data-router/Dockerfile
+    container_name: data-router
+    environment:
+      MQTT_BROKER: tcp://mosquitto:1883
