@@ -141,7 +141,7 @@ func (dr *DataRouter) routeIoTData(data models.IoTSensorData) error {
 		series := fmt.Sprintf("sensor.%s.%s", data.SensorID, data.SensorType)
 		timestamp := data.Timestamp.Unix()
 
-		err := dr.siridbClient.Insert([]siridb.Series{
+		err := dr.siridbClient.Insert([][]interface{
 			{
 				Name: series,
 				Points: []siridb.Point{
@@ -211,7 +211,6 @@ func (dr *DataRouter) handleMessage(client mqtt.Client, msg mqtt.Message) {
 
 	switch message.Type {
 	case "mmdecin_data":
-        :x
 		if err := mapToStruct(message.Data, &data); err != nil {
 			log.Printf("Failed to parse MMDecin data: %v", err)
 			return
