@@ -1,5 +1,4 @@
 # docker-compose.yml
-version: '3.8'
 
 services:
   # Message broker
@@ -96,29 +95,6 @@ services:
       - api-server
     restart: unless-stopped
 
-volumes:
-  mongodb_data:
-  siridb_data:
-
-# mosquitto/config/mosquitto.conf
-listener 1883
-allow_anonymous true
-
-listener 9001
-protocol websockets
-allow_anonymous true
-
-persistence true
-persistence_location /mosquitto/data/
-
-log_dest file /mosquitto/log/mosquitto.log
-log_type all
-      MONGO_URI: mongodb://admin:admin123@mongodb:27017
-    depends_on:
-      - mosquitto
-      - mongodb
-    restart: unless-stopped
-
   traffic-scraper:
     build:
       context: .
@@ -139,3 +115,27 @@ log_type all
     container_name: data-router
     environment:
       MQTT_BROKER: tcp://mosquitto:1883
+
+volumes:
+  mongodb_data:
+  siridb_data:
+
+# mosquitto/config/mosquitto.conf
+#listener 1883
+#allow_anonymous true
+#
+#listener 9001
+#protocol websockets
+#allow_anonymous true
+#
+#persistence true
+#persistence_location /mosquitto/data/
+#
+#log_dest file /mosquitto/log/mosquitto.log
+#log_type all
+#      MONGO_URI: mongodb://admin:admin123@mongodb:27017
+#    depends_on:
+#      - mosquitto
+#      - mongodb
+#    restart: unless-stopped
+#
